@@ -1,6 +1,6 @@
 # Stellar-Nvim
 
-Stellar-Nvim is an extensible configuration layer for Neovim. It takes advantage of modern Neovim 5.0+ features such as
+Stellar-Nvim is an extensible configuration layer for Neovim. It takes advantage of modern Neovim 6.1+ features such as
 the Language Server Protocol and Treesitter.
 
 Stellar-Nvim evolved from my personal neovim configuration and I made it because I wanted to have something extensible
@@ -26,12 +26,20 @@ to fix it yourself and submit a pull request, that's the best way to learn somet
 
 ## Usage
 
-I do plan on making this project very extensible and allowing easy configuration without having to edit the source
-files directly, but rather by merely using a standalone config file, however this isn't yet fully implemented and so
-currently, configuration like this isn't very easy.
+My goal is to make this configuration very easy to extend and customize purely by editing the settings files, rather
+than having to make extensive changes to the core code functionalities. This should make it very simple for anyone to
+use this project and customize it to their liking, even without a huge background in lua and neovim's lua API. 
 
-I will add some documentation about how to use this project to the fullest, but for now, since this project isn't yet
-ready for public use anyway, you will either have to wait, or figure things out on your own. Thanks for understanding.
+That said, this project is mainly for my personal use, and if I know I will never want to change some option for my
+usage, I likely won't include it in the settings files on my own. For that reason, if you want to use this
+configuration, but there's a setting which you miss, don't wait until I add it, open an issue requesting it, or
+implement it on your own and PR it back.
+
+Note that the settings are currently very minimal and they most likely won't include something you may want, since this
+project is still in very early stages. There's also no documentation as to where each setting is, so you may end up
+having to dig for it on your own in the settings folder. Writing documentation is a big undertaking, and until the
+project is in a much more stable state, it would be changing very often and it wouldn't be worth writing, so it may be
+a good while until I add it.
 
 ## Separation from my dotfiles
 

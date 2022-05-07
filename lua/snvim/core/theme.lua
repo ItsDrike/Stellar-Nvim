@@ -1,53 +1,43 @@
-local vim = require("vim")
-local cmd = vim.cmd
-local g = vim.g
-local o = vim.opt
+local utils = require "snvim.utils.core"
+local settings = require "snvim.utils.settings"
 
-cmd[[syntax on]]                -- Turn on syntax highlighting
+local config = settings.get_settings("theme")
 
-o.cursorline = true             -- Highlight cursor line
-o.laststatus = 2                -- Always show status line
-o.number = true                 -- Show line numbers
-o.relativenumber = true         -- Use relative line numbers
-o.showmatch = true              -- Show matching bracket
-o.scrolloff = 5                 -- Keep 5 lines horizontal scrolloff
-o.sidescrolloff = 5             -- Keep 5 chars vertical scrolloff
-o.showmode = false              -- Don't display mode (it's on status line anyway)
+vim.opt.cursorline = config.show_cursor_line
+vim.opt.number = config.show_line_numbers
+vim.opt.relativenumber = config.show_relative_numbers
+vim.opt.showmatch = config.show_matching_brackets
+vim.opt.scrolloff = config.horizontal_scrolloff
+vim.opt.sidescrolloff = config.vertical_scrolloff
+vim.opt.wrap = config.enable_line_wrapping
+vim.opt.showmode = config.show_mode
+vim.opt.list = true
+vim.opt.listchars = config.listchars
+vim.g.markdown_fenced_languages = config.markdown_fenced_languages
 
--- I wasn't able to find a way to set guioptions directly in lua
-cmd[[
-set guioptions-=m       " Remove menubar
-set guioptions-=T       " Remove toolbar
-set guioptions-=r       " Remove right-hand scrollbar
-set guioptions-=L       " Remove left-hand scrollbar
-]]
+-- Make sure to utilize the full 256 colors of most modern terminals,
+-- if we have $DISPLAY env variable set (we're in a graphical session, not pure TTY)
+vim.opt.termguicolors = os.getenv("DISPLAY") and true or false
 
--- Override some colorscheme colors
---  * Use more noticable cursor line color
-cmd[[
-augroup coloroverride
-    autocmd!
-    autocmd ColorScheme * highlight CursorLine guibg=#2b2b2b
-    autocmd ColorScheme * highlight CursorLineNr guifg=#1F85DE ctermfg=LightBlue
-augroup END
-]]
+-- Set highlight colors for cursor line background and current line number foreground
+utils.define_augroup(
+    "_cursor_color",
+    {
+        {
+            "ColorScheme",
+            "*",
+            "highlight CursorLine guibg=" .. config.cursor_line_guibg ..
+                " ctermbg=" .. config.cursor_line_ctermbg
+        },
+        {
+            "ColorScheme",
+            "*",
+            "highlight CursorLineNr guifg=" .. config.cursor_line_number_guifg ..
+                " ctermfg=" .. config.cursor_line_number_ctermfg
+        }
+    }
+)
 
--- Set the colorscheme to default to trigger the above autocmds
--- This can be overridden from plugin definitions as this file is ran before those
-cmd[[colorscheme default]]
-
--- Don't use true colors in TTY
-o.termguicolors = os.getenv("DISPLAY") and true or false
-
--- Highlight special todo comments
-cmd[[
-augroup vimrc_todo
-    autocmd!
-    autocmd Syntax * syn match MyTodo /\v<(FIXME|NOTE|TODO|OPTIMIZE|XXX):/
-          \ containedin=.*Comment,vimCommentTitle
-augroup END
-hi def link MyTodo Todo
-]]
-
--- Use proper syntax highlighting in fenced codeblocks
-g.markdown_fenced_languages = {"html", "javascript", "typescript", "css", "scss", "lua", "vim", "python"}
+-- Set the colorscheme last, since it also triggers the ColorScheme autocmds,
+-- which are defined above
+vim.cmd("colorscheme " .. config.colorscheme)
